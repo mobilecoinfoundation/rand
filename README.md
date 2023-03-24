@@ -12,6 +12,37 @@
 
 A platform abstraction layer providing a cryptographic RNG, `McRng`.
 
+## Example usage
+
+Example usage:
+
+```
+use mc_rand::{McRng, RngCore}
+
+pub fn my_func() -> (u64, u64) {
+    let mut rng = McRng::default();
+    let k0 = rng.next_u64();
+    let k1 = rng.next_u64();
+    (k0, k1)
+}
+```
+
+## What it does
+
+This project has evolved considerably as cargo has gotten more bug fixes and features.
+
+Today, what it does is:
+
+* On targets with CPU feature `rdrand`, `McRng` resolves to `RdRandRng`, which uses
+  CPU intrinsics to call `RDRAND` directly. This implementation was audited by NCC group.
+* When this feature is not present, but the target_arch is `wasm_32`, `McRng` resolves to `OsRng` from rand crate.
+* When neither of these is the case, `McRng` resolves to `ThreadRng`.
+
+On targets without `rdrand`, the feature `rand/std` must be enabled, or the build will fail. In most non-embedded targets,
+something else in your dependency tree will do this, so this generally isn't a big deal.
+
+## Motivation
+
 `McRng` was created initially because MobileCoin builds SGX enclave software in
 a strict `no_std` environment. Enclaves are generally supposed to get randomness
 from the CPU via `RDRAND` and not from the OS, because the OS is untrusted in the
@@ -32,17 +63,7 @@ without requiring explicit configuration or other toil from developers.
 
 Because none of the existing RNG libraries quite provided this, we made `mc-rand`.
 
-This project has evolved considerably as cargo has gotten more bug fixes and features.
-
-Today, what it does is:
-
-* On targets with CPU feature `rdrand`, `McRng` resolves to `RdRandRng`, which uses
-  CPU intrinsics to call `RDRAND` directly. This implementation was audited by NCC group.
-* When this feature is not present, but the target_arch is `wasm_32`, `McRng` resolves to `OsRng` from rand crate.
-* When neither of these is the case, `McRng` resolves to `ThreadRng`.
-
-On targets without `rdrand`, the feature `rand/std` must be enabled, or the build will fail. In most non-embedded targets,
-something else in your dependency tree will do this, so this generally isn't a big deal.
+## Future directions
 
 It would be nice if we could improve this so that on targets without `rdrand`, a conditional dependency on `rand/std` is enabled,
 but afaik this is still not possible due to outstanding issues in cargo. (Or maybe it is, and this is tech debt?)

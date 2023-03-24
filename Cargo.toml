@@ -13,6 +13,9 @@ readme = "README.md"
 repository = "https://github.com/mobilecoinfoundation/rand"
 rust-version = "1.68"
 
+[lib]
+doctest = false
+
 [profile.release]
 lto = "thin"
 
