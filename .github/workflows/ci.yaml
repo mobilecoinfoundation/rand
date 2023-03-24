@@ -171,16 +171,32 @@ jobs:
         rust:
           - stable
           - beta
-        flags:
-          - "--features=std"
-          - "-C target_cpu=skylake"
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
       - uses: r7kamura/rust-problem-matchers@v1
-      - run: cargo +${{ matrix.rust }} build ${{ matrix.flags }}
+      - run: cargo +${{ matrix.rust }} build --features=std
+
+  build-skylake:
+    runs-on: ubuntu-22.04
+    needs:
+      - lint
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - uses: r7kamura/rust-problem-matchers@v1
+      - env:
+          RUSTFLAGS: "-D warnings -C target_cpu=skylake"
+      - run: cargo +${{ matrix.rust }} build
 
   test:
     runs-on: ubuntu-22.04
@@ -191,16 +207,32 @@ jobs:
         rust:
           - stable
           - beta
-        flags:
-          - "--features=std"
-          - "-C target_cpu=skylake"
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
       - uses: r7kamura/rust-problem-matchers@v1
-      - run: cargo +${{ matrix.rust }} test ${{ matrix.flags }}
+      - run: cargo +${{ matrix.rust }} test --features=std
+
+  test-skylake:
+    runs-on: ubuntu-22.04
+    needs:
+      - lint
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - beta
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - uses: r7kamura/rust-problem-matchers@v1
+      - env:
+          RUSTFLAGS: "-D warnings -C target_cpu=skylake"
+      - run: cargo +${{ matrix.rust }} test
 
   doc:
     runs-on: ubuntu-22.04

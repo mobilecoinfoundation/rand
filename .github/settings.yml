@@ -111,7 +111,9 @@ branches:
           - sort
           - "clippy (stable)"
           - "build (stable)"
+          - "build-skylake (stable)"
           - "test (stable)"
+          - "test-skylake (stable)"
           - coverage
       enforce_admins: false
       required_linear_history: true
