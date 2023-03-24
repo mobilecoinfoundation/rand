@@ -255,6 +255,8 @@ jobs:
 
   coverage:
     runs-on: ubuntu-22.04
+    env:
+      RUSTFLAGS: "-D warnings -C target_cpu=skylake"
     needs:
       - lint
     steps:
