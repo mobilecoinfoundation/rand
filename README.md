@@ -16,7 +16,7 @@ A platform abstraction layer providing a cryptographic RNG, `McRng`.
 
 Example usage:
 
-```
+```rust
 use mc_rand::{McRng, RngCore}
 
 pub fn my_func() -> (u64, u64) {
