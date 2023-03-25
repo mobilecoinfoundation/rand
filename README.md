@@ -35,8 +35,8 @@ Today, what it does is:
 
 * On targets with CPU feature `rdrand`, `McRng` resolves to `RdRandRng`, which uses
   CPU intrinsics to call `RDRAND` directly. This implementation was audited by NCC group.
-* When this feature is not present, but the target_arch is `wasm_32`, `McRng` resolves to `OsRng` from rand crate.
-* When neither of these is the case, `McRng` resolves to `ThreadRng`.
+* When this feature is not present, but the target_arch is `wasm_32`, `McRng` resolves to `OsRng` from rand crate. (This is because `ThreadRng` is not available in wasm.)
+* When neither of these is the case, `McRng` resolves to `ThreadRng`. (`ThreadRng` is the generically recommendable cryptographic RNG on major rust platforms.)
 
 On targets without `rdrand`, the feature `rand/std` must be enabled, or the build will fail. In most non-embedded targets,
 something else in your dependency tree will do this, so this generally isn't a big deal.
@@ -86,7 +86,7 @@ by `OsRng` or `ThreadRng` or other popular crates, and has been audited and batt
 [docs-link]: https://docs.rs/crate/mc-rand
 [deps-image]: https://deps.rs/repo/github/mobilecoinfoundation/rand/status.svg?style=flat-square
 [deps-link]: https://deps.rs/repo/github/mobilecoinfoundation/rand
-[codecov-image]: https://img.shields.io/codecov/c/github/mobilecoinfoundation/rand/develop?style=flat-square
+[codecov-image]: https://img.shields.io/codecov/c/github/mobilecoinfoundation/rand/main?style=flat-square
 [codecov-link]: https://codecov.io/gh/mobilecoinfoundation/rand
 [gha-image]: https://img.shields.io/github/actions/workflow/status/mobilecoinfoundation/rand/ci.yaml?branch=main&style=flat-square
 [gha-link]: https://github.com/mobilecoinfoundation/rand/actions/workflows/ci.yaml?query=branch%3Amain
