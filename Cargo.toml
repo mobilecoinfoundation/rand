@@ -1,0 +1,44 @@
+[package]
+name = "mc-rand"
+version = "1.0.0"
+authors = ["MobileCoin"]
+# See https://crates.io/category_slugs for valid categories
+categories = ["cryptography", "random", "rng", "no-std"]
+description = "A platform abstraction layer providing a cryptographic RNG, `McRng`"
+edition = "2021"
+# See https://crates.io/keywords for the common keywords
+keywords = ["cryptography", "random", "rng", "no-std", "web-assembly"]
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/mobilecoinfoundation/rand"
+rust-version = "1.68"
+
+[lib]
+doctest = false
+
+[profile.release]
+lto = "thin"
+
+[package.metadata.release]
+shared-version = true
+dev-version-ext = "beta.0"
+consolidate-commits = true
+consolidate-pushes = true
+tag-name = "v{{version}}"
+
+# The file names in this key are relative to the each crate that gets released.
+# So we only need one `README.md` entry if all the README's follow a
+# common format and are always next to the Cargo.toml for their respective
+# package.
+pre-release-replacements = [
+    {file="README.md", search="mc-[a-z-]+/[0-9.]+", replace="{{crate_name}}/{{version}}"},
+]
+
+[features]
+default = []
+std = ["rand_core/std", "rand/std", "rand/std_rng"]
+
+[dependencies]
+cfg-if = "1.0"
+rand = { version = "0.8", default-features = false }
+rand_core = { version = "0.6", default-features = false }
