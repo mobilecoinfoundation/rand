@@ -234,6 +234,15 @@ jobs:
       - uses: r7kamura/rust-problem-matchers@v1
       - run: cargo +${{ matrix.rust }} test
 
+  test-wasm:
+    runs-on: ubuntu-22.04
+    needs:
+      - lint
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Build and test using wasm-pack
+        run: wasm-pack test --node
+
   doc:
     runs-on: ubuntu-22.04
     needs:
