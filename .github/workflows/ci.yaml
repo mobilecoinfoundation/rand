@@ -177,7 +177,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
       - uses: r7kamura/rust-problem-matchers@v1
-      - run: cargo +${{ matrix.rust }} build --features=std
+      - run: cargo +${{ matrix.rust }} build
 
   build-skylake:
     runs-on: ubuntu-22.04
@@ -213,7 +213,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
       - uses: r7kamura/rust-problem-matchers@v1
-      - run: cargo +${{ matrix.rust }} test --features=std
+      - run: cargo +${{ matrix.rust }} test
 
   test-skylake:
     runs-on: ubuntu-22.04

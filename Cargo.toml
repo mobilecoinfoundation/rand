@@ -3,7 +3,7 @@ name = "mc-rand"
 version = "1.0.0"
 authors = ["MobileCoin"]
 # See https://crates.io/category_slugs for valid categories
-categories = ["cryptography", "random", "rng", "no-std"]
+categories = ["cryptography", "hardware-support", "no-std"]
 description = "A platform abstraction layer providing a cryptographic RNG, `McRng`"
 edition = "2021"
 # See https://crates.io/keywords for the common keywords
@@ -42,3 +42,8 @@ std = ["rand_core/std", "rand/std", "rand/std_rng"]
 cfg-if = "1.0"
 rand = { version = "0.8", default-features = false }
 rand_core = { version = "0.6", default-features = false }
+
+# When rdrand is not present, turn on standard library features in rand crate
+[target.'cfg(not(target_feature = "rdrand"))'.dependencies.rand]
+version = "0.8"
+features = ["std", "std_rng"]

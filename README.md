@@ -38,8 +38,8 @@ Today, what it does is:
 * When this feature is not present, but the target_arch is `wasm_32`, `McRng` resolves to `OsRng` from rand crate.
 * When neither of these is the case, `McRng` resolves to `ThreadRng`.
 
-On targets without `rdrand`, the feature `rand/std` must be enabled, or the build will fail. In most non-embedded targets,
-something else in your dependency tree will do this, so this generally isn't a big deal.
+On targets with `rdrand`, this crate does not pull in the standard library.
+On targets without `rdrand`, the feature `rand/std` will be enabled.
 
 ## Motivation
 
@@ -65,16 +65,14 @@ Because none of the existing RNG libraries quite provided this, we made `mc-rand
 
 ## Future directions
 
-It would be nice if we could improve this so that on targets without `rdrand`, a conditional dependency on `rand/std` is enabled,
-but afaik this is still not possible due to outstanding issues in cargo. (Or maybe it is, and this is tech debt?)
+`McRng` fills a niche that isn't quite filled by `OsRng` or `ThreadRng` or other popular crates, and has been audited and battle-tested in production for years.
 
 Feel free to use `mc-rand` knowing that it will usually do the right thing:
 
 * When working on x86 on enclave implementations, it's great, because your cargo tests and benchmarks will use the same implementation that your code will use in production.
 * On other targets, it will still use the most generally recommendable crypographic RNG for that platform.
 
-As other targets arise that are of interest, we are happy to improve support for them. `McRng` fills a niche in terms of portability and performance that isn't quite filled
-by `OsRng` or `ThreadRng` or other popular crates, and has been audited and battle-tested in production for years.
+As other targets arise that are of interest, we are happy to improve support for them.
 
 [chat-image]: https://img.shields.io/discord/844353360348971068?style=flat-square
 [chat-link]: https://discord.gg/mobilecoin
@@ -86,7 +84,7 @@ by `OsRng` or `ThreadRng` or other popular crates, and has been audited and batt
 [docs-link]: https://docs.rs/crate/mc-rand
 [deps-image]: https://deps.rs/repo/github/mobilecoinfoundation/rand/status.svg?style=flat-square
 [deps-link]: https://deps.rs/repo/github/mobilecoinfoundation/rand
-[codecov-image]: https://img.shields.io/codecov/c/github/mobilecoinfoundation/rand/develop?style=flat-square
+[codecov-image]: https://img.shields.io/codecov/c/github/mobilecoinfoundation/rand/main?style=flat-square
 [codecov-link]: https://codecov.io/gh/mobilecoinfoundation/rand
 [gha-image]: https://img.shields.io/github/actions/workflow/status/mobilecoinfoundation/rand/ci.yaml?branch=main&style=flat-square
 [gha-link]: https://github.com/mobilecoinfoundation/rand/actions/workflows/ci.yaml?query=branch%3Amain
