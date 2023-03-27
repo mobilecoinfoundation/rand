@@ -238,12 +238,20 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - lint
+    strategy:
+      matrix:
+        rust:
+          - stable
     steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
       - name: Install wasm-pack
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build and test using wasm-pack
-        run: wasm-pack test --node
+        run: ls && wasm-pack test --node
 
   doc:
     runs-on: ubuntu-22.04
