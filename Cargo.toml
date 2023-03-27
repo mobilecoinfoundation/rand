@@ -1,6 +1,6 @@
 [package]
 name = "mc-rand"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["MobileCoin"]
 categories = ["cryptography", "hardware-support", "no-std::no-alloc"]
 description = "A platform abstraction layer providing a cryptographic RNG, `McRng`"
