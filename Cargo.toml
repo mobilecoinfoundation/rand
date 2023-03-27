@@ -50,6 +50,6 @@ features = ["std", "std_rng"]
 [target.'cfg(all(any(target_arch = "wasm32", target_arch = "wasm64"), target_os = "unknown"))'.dev-dependencies]
 # When doing cargo test --target wasm32-unknown-unknown, or wasm-pack test, the build fails if getrandom/js is not enabled.
 # See https://docs.rs/getrandom/latest/getrandom/#webassembly-support for guidance
-getrandom = { version = "*", features = ["js"] }
+getrandom = { version = "0.2", features = ["js"] }
 # `wasm-pack test` requires this
 wasm-bindgen-test = "0.2"
