@@ -247,9 +247,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
-      - name: Install wasm-pack
-        run: |
-          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
       - name: Build and test using wasm-pack
         run: ls && wasm-pack test --node
 
