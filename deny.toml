@@ -30,7 +30,7 @@ exceptions = []
 [bans]
 multiple-versions = "warn"
 # Lint level for when a crate version requirement is `*`
-wildcards = "warn"
+wildcards = "deny"
 highlight = "all"
 allow = []
 deny = [
