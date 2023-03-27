@@ -234,6 +234,25 @@ jobs:
       - uses: r7kamura/rust-problem-matchers@v1
       - run: cargo +${{ matrix.rust }} test
 
+  test-wasm:
+    runs-on: ubuntu-22.04
+    needs:
+      - lint
+    strategy:
+      matrix:
+        rust:
+          - stable
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+      - name: Build and test using wasm-pack
+        run: ls && wasm-pack test --node
+
   doc:
     runs-on: ubuntu-22.04
     needs:

@@ -114,6 +114,7 @@ branches:
           - "build-skylake (stable)"
           - "test (stable)"
           - "test-skylake (stable)"
+          - "test-wasm (stable)"
           - coverage
       enforce_admins: false
       required_linear_history: true
