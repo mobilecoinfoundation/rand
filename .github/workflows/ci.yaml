@@ -238,6 +238,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs:
       - lint
+    steps:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build and test using wasm-pack
