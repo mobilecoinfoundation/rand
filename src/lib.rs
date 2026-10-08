@@ -1,11 +1,11 @@
-// Copyright (c) 2018-2023 The MobileCoin Foundation
+// Copyright (c) 2018-2026 The MobileCoin Foundation
 
 #![no_std]
 #![doc = include_str!("../README.md")]
 
 pub extern crate rand_core;
 
-pub use rand_core::{CryptoRng, RngCore};
+pub use rand_core::{CryptoRng, Rng};
 
 use cfg_if::cfg_if;
 
@@ -28,7 +28,22 @@ cfg_if! {
 mod test {
     use super::*;
 
-    #[test]
+    fn assert_rng_traits<T: Default + Rng + CryptoRng>() {}
+
+    #[cfg_attr(
+        all(target_arch = "wasm32", target_os = "unknown"),
+        wasm_bindgen_test::wasm_bindgen_test
+    )]
+    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
+    fn test_rng_traits() {
+        assert_rng_traits::<McRng>();
+    }
+
+    #[cfg_attr(
+        all(target_arch = "wasm32", target_os = "unknown"),
+        wasm_bindgen_test::wasm_bindgen_test
+    )]
+    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
     fn test_entropy_32() {
         let first_result = McRng::default().next_u32();
         for _ in 0..50 {
@@ -40,7 +55,11 @@ mod test {
         panic!("Got the same u32 50 times in a row: {}", first_result);
     }
 
-    #[test]
+    #[cfg_attr(
+        all(target_arch = "wasm32", target_os = "unknown"),
+        wasm_bindgen_test::wasm_bindgen_test
+    )]
+    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
     fn test_entropy_64() {
         let first_result = McRng::default().next_u64();
         for _ in 0..50 {
@@ -52,7 +71,11 @@ mod test {
         panic!("Got the same u64 50 times in a row: {}", first_result);
     }
 
-    #[test]
+    #[cfg_attr(
+        all(target_arch = "wasm32", target_os = "unknown"),
+        wasm_bindgen_test::wasm_bindgen_test
+    )]
+    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
     fn test_not_filled() {
         let result = McRng::default().next_u32();
         if result == 0 || result == 0xFFFF_FFFFu32 {
