@@ -1,5 +1,6 @@
-// Copyright (c) 2018-2023 The MobileCoin Foundation
+// Copyright (c) 2018-2026 The MobileCoin Foundation
 
-use rand::rngs::OsRng;
+use rand::rngs::SysRng;
+use rand_core::UnwrapErr;
 
-pub type McRng = OsRng;
+pub type McRng = UnwrapErr<SysRng>;
