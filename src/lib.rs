@@ -28,22 +28,17 @@ cfg_if! {
 mod test {
     use super::*;
 
+    #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+    use wasm_bindgen_test::wasm_bindgen_test as test;
+
     fn assert_rng_traits<T: Default + Rng + CryptoRng>() {}
 
-    #[cfg_attr(
-        all(target_arch = "wasm32", target_os = "unknown"),
-        wasm_bindgen_test::wasm_bindgen_test
-    )]
-    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
+    #[test]
     fn test_rng_traits() {
         assert_rng_traits::<McRng>();
     }
 
-    #[cfg_attr(
-        all(target_arch = "wasm32", target_os = "unknown"),
-        wasm_bindgen_test::wasm_bindgen_test
-    )]
-    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
+    #[test]
     fn test_entropy_32() {
         let first_result = McRng::default().next_u32();
         for _ in 0..50 {
@@ -55,11 +50,7 @@ mod test {
         panic!("Got the same u32 50 times in a row: {}", first_result);
     }
 
-    #[cfg_attr(
-        all(target_arch = "wasm32", target_os = "unknown"),
-        wasm_bindgen_test::wasm_bindgen_test
-    )]
-    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
+    #[test]
     fn test_entropy_64() {
         let first_result = McRng::default().next_u64();
         for _ in 0..50 {
@@ -71,11 +62,7 @@ mod test {
         panic!("Got the same u64 50 times in a row: {}", first_result);
     }
 
-    #[cfg_attr(
-        all(target_arch = "wasm32", target_os = "unknown"),
-        wasm_bindgen_test::wasm_bindgen_test
-    )]
-    #[cfg_attr(not(all(target_arch = "wasm32", target_os = "unknown")), test)]
+    #[test]
     fn test_not_filled() {
         let result = McRng::default().next_u32();
         if result == 0 || result == 0xFFFF_FFFFu32 {
