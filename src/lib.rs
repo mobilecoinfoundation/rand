@@ -1,11 +1,11 @@
-// Copyright (c) 2018-2023 The MobileCoin Foundation
+// Copyright (c) 2018-2026 The MobileCoin Foundation
 
 #![no_std]
 #![doc = include_str!("../README.md")]
 
 pub extern crate rand_core;
 
-pub use rand_core::{CryptoRng, RngCore};
+pub use rand_core::{CryptoRng, Rng};
 
 use cfg_if::cfg_if;
 
@@ -27,6 +27,16 @@ cfg_if! {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+    use wasm_bindgen_test::wasm_bindgen_test as test;
+
+    fn assert_rng_traits<T: Default + Rng + CryptoRng>() {}
+
+    #[test]
+    fn test_rng_traits() {
+        assert_rng_traits::<McRng>();
+    }
 
     #[test]
     fn test_entropy_32() {

@@ -1,45 +1,40 @@
-// Copyright (c) 2018-2023 The MobileCoin Foundation
+// Copyright (c) 2018-2026 The MobileCoin Foundation
 
 // Note: This module is only expected to compile on x86 and x86_64
 
-use super::RngCore;
-use rand_core::{impls, CryptoRng, Error};
+use core::convert::Infallible;
+use rand_core::{utils, TryCryptoRng, TryRng};
 
 mod retry;
 
-// A implementation of RngCore which wraps calls to RDRAND instruction
+// An implementation of TryRng which wraps calls to the RDRAND instruction
 // Should work in enclave and out of enclave with no changes
 #[derive(Default)]
 pub struct McRng;
 
-impl CryptoRng for McRng {}
+impl TryCryptoRng for McRng {}
 
-// See docu e.g.: https://docs.rs/rand_core/0.3.0/rand_core/trait.RngCore.html
-impl RngCore for McRng {
+impl TryRng for McRng {
+    type Error = Infallible;
+
     #[inline]
-    fn next_u32(&mut self) -> u32 {
-        retry::next_rdrand_u32_or_panic()
+    fn try_next_u32(&mut self) -> Result<u32, Self::Error> {
+        Ok(retry::next_rdrand_u32_or_panic())
     }
 
     // On x86_64 use the rdrand64_step instruction,
-    // on x86 use `impls::next_u64_via_u32` which generically makes a u64 from
+    // on x86 use `utils::next_u64_via_u32` which generically makes a u64 from
     // two u32s
     #[inline]
-    fn next_u64(&mut self) -> u64 {
+    fn try_next_u64(&mut self) -> Result<u64, Self::Error> {
         #[cfg(target_arch = "x86")]
-        return impls::next_u64_via_u32(self);
+        return utils::next_u64_via_u32(self);
         #[cfg(target_arch = "x86_64")]
-        return retry::next_rdrand_u64_or_panic();
+        return Ok(retry::next_rdrand_u64_or_panic());
     }
 
     #[inline]
-    fn fill_bytes(&mut self, dest: &mut [u8]) {
-        impls::fill_bytes_via_next(self, dest)
-    }
-
-    #[inline]
-    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Error> {
-        self.fill_bytes(dest);
-        Ok(())
+    fn try_fill_bytes(&mut self, dest: &mut [u8]) -> Result<(), Self::Error> {
+        utils::fill_bytes_via_next_word(dest, || self.try_next_u64())
     }
 }

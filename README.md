@@ -17,7 +17,7 @@ A platform abstraction layer providing a cryptographic RNG, `McRng`.
 Example usage:
 
 ```rust
-use mc_rand::{McRng, RngCore}
+use mc_rand::{McRng, Rng};
 
 pub fn my_func() -> (u64, u64) {
     let mut rng = McRng::default();
@@ -33,10 +33,13 @@ This project has evolved considerably as cargo has gotten more bug fixes and fea
 
 Today, what it does is:
 
-* On targets with CPU feature `rdrand`, `McRng` resolves to `RdRandRng`, which uses
+* On targets with CPU feature `rdrand`, `McRng` uses
   CPU intrinsics to call `RDRAND` directly. This implementation was audited by NCC group.
-* When this feature is not present, but the target_arch is `wasm_32`, `McRng` resolves to `OsRng` from rand crate. (This is because `ThreadRng` is not available in wasm.)
-* When neither of these is the case, `McRng` resolves to `ThreadRng`. (`ThreadRng` is the generically recommendable cryptographic RNG on major rust platforms.)
+* When this feature is not present and the target is `wasm32-unknown-unknown`,
+  `McRng` uses an infallible adapter over `SysRng` from the rand crate.
+* When neither of these is the case, `McRng` uses `ThreadRng` through
+  `rand::rng()`. (`ThreadRng` is the generically recommendable cryptographic RNG
+  on major Rust platforms.)
 
 On targets with `rdrand`, this crate does not pull in the standard library.
 On targets without `rdrand`, the feature `rand/std` will be enabled.
@@ -65,7 +68,7 @@ Because none of the existing RNG libraries quite provided this, we made `mc-rand
 
 ## Future directions
 
-`McRng` fills a niche that isn't quite filled by `OsRng` or `ThreadRng` or other popular crates, and has been audited and battle-tested in production for years.
+`McRng` fills a niche that isn't quite filled by `SysRng` or `ThreadRng` or other popular crates, and has been audited and battle-tested in production for years.
 
 Feel free to use `mc-rand` knowing that it will usually do the right thing:
 

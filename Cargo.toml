@@ -1,6 +1,6 @@
 [package]
 name = "mc-rand"
-version = "1.1.0"
+version = "2.0.0"
 authors = ["MobileCoin"]
 categories = ["cryptography", "hardware-support", "no-std::no-alloc"]
 description = "A platform abstraction layer providing a cryptographic RNG, `McRng`"
@@ -9,13 +9,7 @@ keywords = ["cryptography", "random", "rng", "no-std", "webassembly"]
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/mobilecoinfoundation/rand"
-rust-version = "1.68"
-
-[lib]
-doctest = false
-
-[profile.release]
-lto = "thin"
+rust-version = "1.85"
 
 [package.metadata.release]
 shared-version = true
@@ -32,24 +26,31 @@ pre-release-replacements = [
     {file="README.md", search="mc-[a-z-]+/[0-9.]+", replace="{{crate_name}}/{{version}}"},
 ]
 
+[lib]
+doctest = false
+
 [features]
 default = []
-std = ["rand_core/std", "rand/std", "rand/std_rng"]
+std = ["rand/std", "rand/std_rng"]
 
 [dependencies]
 cfg-if = "1.0"
-rand = { version = "0.8", default-features = false }
-rand_core = { version = "0.6", default-features = false }
+rand = { version = "0.10", default-features = false }
+rand_core = { version = "0.10", default-features = false }
 
 # When rdrand is not present, turn on standard library features in rand crate
 [target.'cfg(not(target_feature = "rdrand"))'.dependencies.rand]
-version = "0.8"
-features = ["std", "std_rng"]
+version = "0.10"
+default-features = false
+features = ["thread_rng"]
 
 # Support running tests in wasm-pack
 [target.'cfg(all(any(target_arch = "wasm32", target_arch = "wasm64"), target_os = "unknown"))'.dev-dependencies]
-# When doing cargo test --target wasm32-unknown-unknown, or wasm-pack test, the build fails if getrandom/js is not enabled.
+# When doing cargo test --target wasm32-unknown-unknown, or wasm-pack test, the build fails if getrandom/wasm_js is not enabled.
 # See https://docs.rs/getrandom/latest/getrandom/#webassembly-support for guidance
-getrandom = { version = "0.2", features = ["js"] }
+getrandom = { version = "0.4", features = ["wasm_js"] }
 # `wasm-pack test` requires this
 wasm-bindgen-test = "0.3"
+
+[profile.release]
+lto = "thin"
